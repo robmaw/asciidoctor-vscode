@@ -18,10 +18,10 @@
 	"bugs": "https://github.com/asciidoctor/asciidoctor-vscode/issues",
 	"homepage": "https://github.com/asciidoctor/asciidoctor-vscode/blob/master/README.md",
 	"icon": "images/icon.png",
+	"main": "./out/extension.js",
 	"browser": "./dist/browser/extension",
-	"main": "./dist/src/extension.js",
 	"engines": {
-		"vscode": "^1.31.0"
+		"vscode": "^1.60.0"
 	},
 	"categories": [
 		"Programming Languages"
@@ -466,18 +466,20 @@
 		]
 	},
 	"scripts": {
+		"vscode:prepublish": "npm run build-ext -- --minify",
 		"copy-assets": "cp node_modules/@highlightjs/cdn-assets/highlight.min.js media/highlightjs && cp -r node_modules/@highlightjs/cdn-assets/languages media/highlightjs && cp -r node_modules/@highlightjs/cdn-assets/styles media/highlightjs",
 		"dev": "npm run build",
 		"build": "npm run copy-assets && npm run build-ext && npm run build-preview",
 		"build-web": "webpack --config extension-browser.webpack.config --mode none",
 		"build-preview": "webpack --config extension-preview.webpack.config --mode production",
-		"build-ext": "tsc -p ./",
+		"build-ext": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
+		"build-ext:watch": "npm run build-ext -- --sourcemap --watch",
 		"build-ext": "tsc -p ./",
 		"package": "npm run build && npm run build-web && vsce package",
 		"deploy": "vsce publish -p",
 		"lint": "eslint 'src/**/*.ts' 'preview-src/**/*.ts' --format unix",
 		"lint:fix": "npm run lint -- --fix",
-		"pretest": "npm run build",
+		"pretest": "tsc -p ./ && npm run build",
 		"test": "node ./dist/src/test/runTest.js"
 	},
 	"devDependencies": {
@@ -489,6 +491,7 @@
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
 		"@typescript-eslint/parser": "^4.31.1",
 		"copy-webpack-plugin": "^9.0.1",
+		"esbuild": "^0.14.17",
 		"eslint": "^7.32.0",
 		"eslint-plugin-import": "^2.20.2",
 		"eslint-plugin-node": "^11.1.0",

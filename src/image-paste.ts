@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as vscode from 'vscode'
 import { spawn } from 'child_process'
-import * as moment from 'moment'
+import moment from 'moment'
 import * as fs from 'fs'
 
 import { AsciidocParser } from './asciidocParser'
